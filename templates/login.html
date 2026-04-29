@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Admin</title>
+
+    <style>
+        body {
+            background: #000;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial;
+        }
+
+        .box {
+            background: #111;
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid #d4af37;
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button {
+            background: #d4af37;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #b8962e;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+    <h2>🔐 Panel Admin</h2>
+
+   <form method="POST" action="/login">
+
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <input type="text" name="usuario" placeholder="Usuario" required>
+
+    <input type="password" name="clave" placeholder="Contraseña" required>
+
+    <button type="submit">Entrar</button>
+
+</form>
+</div>
+
+</body>
+</html>

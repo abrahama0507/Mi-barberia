@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El negro barber - Reservas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { 
+            background: url('/static/logo.png') center center/contain no-repeat fixed, #000000; 
+            background-size: 60vw;
+            color: #ffffff; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: -1;
+        }
+        .logo-img, #mainLogo {
+            max-width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid #d4af37;
+            background: #fff;
+            box-shadow: 0 0 20px #0008;
+        }
+        .card-reserva { background-color: #1a1a1a; border: 2px solid #d4af37; border-radius: 15px; }
+        .btn-gold { background-color: #d4af37; color: #000000; font-weight: bold; border: none; }
+        .btn-gold:hover { background-color: #b8962e; color: #000000; }
+        .form-control, .form-select { background-color: #2a2a2a; border: 1px solid #d4af37; color: #ffffff; }
+        .form-control:focus { background-color: #333333; color: #ffffff; border-color: #d4af37; box-shadow: none; }
+        .section-title { color: #d4af37; border-bottom: 2px solid #d4af37; padding-bottom: 10px; margin-bottom: 20px; }
+        .ubicacion-card { background-color: #1a1a1a; border: 2px solid #d4af37; border-radius: 15px; }
+        .servicio-item { background-color: #2a2a2a; border-left: 4px solid #d4af37; padding: 15px; margin-bottom: 10px; border-radius: 0 10px 10px 0; }
+        @keyframes glowGold {
+            0% { text-shadow: 0 0 5px #d4af37, 0 0 10px #d4af37; }
+            50% { text-shadow: 0 0 15px #ffd700, 0 0 30px #ffd700; }
+            100% { text-shadow: 0 0 5px #d4af37, 0 0 10px #d4af37; }
+        }
+        @keyframes moveBg {
+            0% { background-position: center; }
+            50% { background-position: center 15px; }
+            100% { background-position: center; }
+        }
+        .header-animado {
+            background-size: 70%;
+            animation: moveBg 12s infinite linear;
+        }
+        .texto-glow {
+            animation: glowGold 1.5s infinite ease-in-out;
+            color: #ffd700 !important;
+            font-weight: bold;
+            font-size: 1.3rem;
+            letter-spacing: 2px;
+        }
+        .btn-gold {
+            transition: all 0.3s ease;
+        }
+        .btn-gold:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px #d4af37;
+        }
+        .servicio-item {
+            transition: all 0.3s ease;
+        }
+        .servicio-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 0 10px #d4af37;
+        }
+        .redes-header {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            display: flex;
+            gap: 15px;
+        }
+        .redes-header a {
+            color: #ffffff;
+            font-size: 22px;
+            transition: all 0.3s ease;
+            background: rgba(0,0,0,0.6);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .redes-header a:hover {
+            color: #d4af37;
+            transform: scale(1.2);
+            text-shadow: 0 0 10px #d4af37;
+        }
+        .anim-scroll {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease;
+        }
+        .anim-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .social-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+        .float-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .float-btn.whatsapp { background: #25D366; }
+        .float-btn.instagram { background: #E1306C; }
+        .float-btn.tiktok { background: #000000; border: 1px solid white; }
+        .float-btn:hover { transform: scale(1.1); }
+    </style>
+</head>
+<body>
+    
+<div class="text-center py-5 header-animado" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.9)), url('/static/logo2.png') center center no-repeat;">
+    <div class="redes-header">
+        <a href="https://wa.me/56968721919?text=Hola%20quiero%20reservar%20un%20corte" target="_blank">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+        <a href="https://instagram.com/nigasbarber" target="_blank">
+            <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://tiktok.com/@tuusuario" target="_blank">
+            <i class="fab fa-tiktok"></i>
+        </a>
+    </div>
+
+    <img src="/static/logo.png" alt="Logo El Negro Barber" class="img-fluid mb-3 logo-img" style="display: none;" id="mainLogo" onerror="this.style.display='none'">
+    
+    <h1 style="color: #d4af37; display: block;" class="logo-text" id="logoText">
+        💈 El Negro Barber
+    </h1>
+
+    <p class="fs-5 texto-glow">Tu estilo, mi pasión</p>
+</div>
+
+<div class="container py-4">  
+    <section class="mb-5 anim-scroll">
+        <h2 class="section-title"><i class="fas fa-user"></i> Sobre Mí</h2>
+        <div class="row align-items-center">
+            <div class="col-md-4 text-center mb-3">
+               <img src="/static/logo3.png" 
+     class="rounded-circle" 
+     style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #d4af37;">
+            </div>
+            <div class="col-md-8">
+                <h3 style="color: #d4af37;">El Negro Barber</h3>
+                <p class="text-light">Un chico con solo 18 años que ha iniciado su vida como barbero.</p>
+                <p class="text-light">Mi pasión es transformar tu look y darte la confianza que mereces. Cada corte es para hacerte feliz a ti.</p>
+                <div class="mt-3">
+                    <span class="badge bg-warning text-dark me-2">💈 Barbería Clásica</span>
+                    <span class="badge bg-warning text-dark me-2">✂️ Cortes Modernos</span>
+                    <span class="badge bg-warning text-dark">🪒 Barba Profesional</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-5 anim-scroll">
+        <h2 class="section-title"><i class="fas fa-scissors"></i> Servicios</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="servicio-item">
+                    <h5 style="color: #d4af37;">Degradado (Fade)</h5>
+                    <p class="mb-0">Corte moderno con degradado perfecto</p>
+                    <strong>$3.000</strong>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="servicio-item">
+                    <h5 style="color: #d4af37;">Corte Clásico</h5>
+                    <p class="mb-0">Corte tradicional con acabado profesional</p>
+                    <strong>$1.500</strong>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="servicio-item">
+                    <h5 style="color: #d4af37;">Perfilado de Barba</h5>
+                    <p class="mb-0">Diseño y mantenimiento de barba</p>
+                    <strong>$1.000</strong>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-5 anim-scroll">
+        <h2 class="section-title"><i class="fas fa-calendar-check"></i> Reservar Cita</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+             <div class="card">
+<form></form>
+</div>
+
+      {% with mensajes = get_flashed_messages() %}
+  {% if mensajes %}
+    <div id="toast-msg" style="
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #00c853;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 10px;
+        z-index:9999;
+        box-shadow: 0 0 15px #000;
+        font-weight: bold;
+        opacity: 0;
+        transform: translateY(-20px);
+        transition: all 0.5s ease;
+    ">
+      {{ mensajes[0] }}
+    </div>
+
+   <script>
+window.addEventListener("load", () => {
+
+    const toast = document.getElementById("toast-msg");
+    const sound = document.getElementById("successSound");
+
+    if (toast) {
+
+        // 🔊 reproducir sonido
+        sound.play().catch(() => {});
+
+        // animación entrada
+        setTimeout(() => {
+            toast.style.opacity = "1";
+            toast.style.transform = "translateY(0)";
+        }, 100);
+
+        // animación salida
+        setTimeout(() => {
+            toast.style.opacity = "0";
+            toast.style.transform = "translateY(-20px)";
+        }, 3000);    }
+});
+    </script>
+    {% endif %}
+{% endwith %}
+  
+                    <form action="/reservar" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <div class="mb-3">
+                            <label class="form-label">Nombre Completo</label>
+                            <input type="text" name="nombre" class="form-control" placeholder="Ej: Juan Pérez" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Teléfono</label>
+                            <input type="tel" name="telefono" class="form-control" placeholder="Ej: 300 123 4567" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Correo Electrónico</label>
+                            <input type="email" name="correo" class="form-control" placeholder="tu@email.com" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">¿Qué corte quieres?</label>
+                            <select name="corte" class="form-select">
+                                <option value="Degradado">Degradado (Fade) - $3.000</option>
+                                <option value="Corte Clásico">Corte Clásico - $1.500</option>
+                                <option value="Barba">Perfilado de Barba - $1.000</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Elige la Fecha</label>
+                            <input type="date" name="fecha" id="fecha" class="form-control" lang="es" min="{{ fecha_min }}"  required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Elige el Horario</label>
+                            <select name="horario" class="form-select">
+                                <option value="10:00">10:00 AM</option>
+                                <option value="11:00">11:00 AM</option>
+                                <option value="12:00">12:00 PM</option>
+                                <option value="13:00">1:00 PM</option>
+                                <option value="14:00">2:00 PM</option>
+                                <option value="15:00">3:00 PM</option>
+                                <option value="16:00">4:00 PM</option>
+                                <option value="17:00">5:00 PM</option>
+                                <option value="18:00">6:00 PM</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-gold w-100 py-2">RESERVAR</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-5 anim-scroll">
+        <h2 class="section-title"><i class="fas fa-map-marker-alt"></i> Dónde Atiendo</h2>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <div class="ubicacion-card p-4 h-100">
+                    <h4 style="color: #d4af37;"><i class="fas fa-home"></i> Servicio a Domicilio</h4>
+                    <p class="text-light">Atiendo en todo Santiago 📍</p>
+                    <ul class="list-unstyled text-light">
+                        <li><i class="fas fa-check text-warning me-2"></i> Providencia</li>
+                        <li><i class="fas fa-check text-warning me-2"></i> Las Condes</li>
+                        <li><i class="fas fa-check text-warning me-2"></i> Ñuñoa</li>
+                        <li><i class="fas fa-check text-warning me-2"></i> Santiago Centro</li>
+                        <li><i class="fas fa-check text-warning me-2"></i> Y toda la RM</li>
+                    </ul>
+                    <p class="text-secondary small"><i class="fas fa-truck me-2"></i>¡Llego hasta donde estés!</p>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="ubicacion-card p-4 h-100">
+                    <h4 style="color: #d4af37;"><i class="fas fa-clock"></i> Horarios de Atención</h4>
+                    <ul class="list-unstyled text-light">
+                        <li class="mb-2">📅 <strong>Lunes a Viernes:</strong> 9:00 - 20:00</li>
+                        <li class="mb-2">📅 <strong>Sábado:</strong> 10:00 - 18:00</li>
+                        <li>📅 <strong>Domingo:</strong> Cerrado</li>
+                    </ul>
+                    <hr class="border-secondary">
+                    <p class="text-light mb-0"><i class="fas fa-phone text-warning me-2"></i><strong>Reservas:</strong> Por esta página o WhatsApp</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="text-center py-4 border-top border-secondary">
+        <p class="text-secondary mb-0">💈 El Negro Barber - Santiago, Chile</p>
+        <p class="text-secondary small">© 2026 Todos los derechos reservados</p>
+    </footer>
+</div>
+
+<div class="social-float">
+    <a href="https://wa.me/56968721919?text=Hola%20quiero%20reservar%20un%20corte" target="_blank" class="float-btn whatsapp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+    <a href="https://instagram.com/nigasbarber" target="_blank" class="float-btn instagram">
+        <i class="fab fa-instagram"></i>
+    </a>
+    <a href="https://tiktok.com/@tuusuario" target="_blank" class="float-btn tiktok">
+        <i class="fab fa-tiktok"></i>
+    </a>
+</div>
+
+<script>
+    // Datos del servidor
+  
+    document.getElementById('fecha').addEventListener('click', function() {
+        this.lang = 'es-CL';
+    });
+    
+    const logoImg = document.getElementById('mainLogo');
+    const logoText = document.getElementById('logoText');
+    
+    logoImg.onload = function() {
+        logoImg.style.display = 'inline-block';
+        logoText.style.display = 'none';
+    };
+
+    if (logoImg.complete && logoImg.naturalHeight !== 0) {
+        logoImg.style.display = 'inline-block';
+        logoText.style.display = 'none';
+    }
+
+    // Validar fecha mínima desde el servidor
+    const fechaMin = "{{ fecha_min }}";
+    
+    document.getElementById('fecha').setAttribute('min', fechaMin);
+    
+
+    // Función para actualizar horas ocupadas
+    const select = document.getElementById("horario");
+    const fechaInput = document.getElementById("fecha");
+
+    function actualizarHoras() {
+        const fecha = fechaInput.value;
+        if (!fecha) return;
+
+        const opciones = select.querySelectorAll("option");
+        opciones.forEach(op => {
+            const ocupada = horas_ocupadas.some(h =>
+                h.fecha === fecha && h.hora === op.value
+            );
+            op.disabled = ocupada;
+            op.style.color = ocupada ? '#666' : '';
+        });
+    }
+
+    fechaInput.addEventListener("change", actualizarHoras);
+    actualizarHoras();
+
+    // Animaciones scroll
+    const elementos = document.querySelectorAll('.anim-scroll');
+    const mostrarScroll = () => {
+        elementos.forEach(el => {
+            const top = el.getBoundingClientRect().top;
+            const pantalla = window.innerHeight;
+            if (top < pantalla - 100) {
+                el.classList.add('visible');
+            }
+        });
+    };
+   
+        window.addEventListener('scroll', mostrarScroll);
+        mostrarScroll();
+    </script>
+<audio id="successSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+</body>
+</html>

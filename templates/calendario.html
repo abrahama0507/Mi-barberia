@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Calendario Barbería</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #000000, #1a1a1a);
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        #calendar {
+            background: #111;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 0 25px rgba(212,175,55,0.3);
+        }
+
+        .fc-toolbar-title {
+            color: #d4af37;
+            font-weight: bold;
+        }
+
+        .fc-button {
+            background: #d4af37 !important;
+            border: none !important;
+            color: black !important;
+        }
+
+        .fc-event {
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>💈 Agenda Profesional</h2>
+
+<div id="calendar"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'es',
+        events: '/api/citas',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        eventColor: '#d4af37',
+        eventTextColor: '#000',
+        buttonText: {
+            today: 'Hoy',
+            month: 'Mes',
+            week: 'Semana',
+            day: 'Día'
+        },
+        monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+        dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+        eventClick: function(info) {
+            alert('Cita con ' + info.event.title + '\nHora: ' + info.event.start.toLocaleString());
+        }
+    });
+    calendar.render();
+});
+</script>
+
+</body>
+</html>
