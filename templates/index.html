@@ -239,19 +239,37 @@
                     {% endif %}
                     {% endwith %}
                     <form action="/reservar" method="POST" id="formReserva">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                        <div class="mb-3">
-                            <label class="form-label">Nombre Completo</label>
-                            <input type="text" name="nombre" class="form-control" placeholder="Ej: Juan Pérez" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Teléfono</label>
-                            <input type="tel" name="telefono" class="form-control" placeholder="Ej: 300 123 4567" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Correo Electrónico</label>
-                            <input type="email" name="correo" class="form-control" placeholder="tu@email.com" required>
-                        </div>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+    <div class="mb-3">
+        <label class="form-label">Nombre Completo</label>
+        <input type="text" name="nombre" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Teléfono</label>
+        <input type="tel" name="telefono" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Correo Electrónico</label>
+        <input type="email" name="correo" class="form-control" required>
+    </div>
+
+    <!-- 🔥 FALTA ESTO -->
+    <div class="mb-3">
+        <label class="form-label">Fecha</label>
+        <input type="date" id="fecha" name="fecha" class="form-control" required>
+    </div>
+
+    <!-- 👇 ESTE YA LO PUSISTE BIEN -->
+    <input type="hidden" name="horario" id="horarioInput">
+
+    <!-- 👇 BOTONES -->
+    <div id="horariosGrid"></div>
+
+    <button type="submit" class="btn btn-primary">Reservar</button>
+</form>
                         <div class="mb-3">
                             <label class="form-label">¿Qué corte quieres?</label>
                             <select name="corte" class="form-select">
@@ -347,7 +365,7 @@ function actualizarHorariosGrid() {
     .map(h => h.hora);
     let hayDisponibles = false;
     ["Mañana", "Tarde", "Noche"].forEach(bloque => {
-        const horariosBloque = horariosIntervalo.filter(h => h.bloque === bloque && !horasocupadasFecha.includes(h.value));
+        const horariosBloque = horariosIntervalo.filter(h => h.bloque === bloque && !horasOcupadasFecha.includes(h.value));
         if (horariosBloque.length > 0) {
             hayDisponibles = true;
             const bloqueDiv = document.createElement('div');
