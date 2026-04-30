@@ -337,6 +337,7 @@
 
 <script>
 
+const horasOcupadas = {{ horas_ocupadas | tojson }};
 const horariosIntervalo = [
     { value: "09:00", label: "9:00 AM", bloque: "Mañana" },
     { value: "10:30", label: "10:30 AM", bloque: "Mañana" },
@@ -360,9 +361,7 @@ function actualizarHorariosGrid() {
         noHorariosMsg.style.display = 'none';
         return;
     }
-    const horasOcupadasFecha = horas_ocupadas
-    .filter(h => h.fecha === fechaSeleccionada)
-    .map(h => h.hora);
+    const horasOcupadasFecha = horasOcupadas.filter(h => h.fecha === fechaSeleccionada).map(h => h.hora);
     let hayDisponibles = false;
     ["Mañana", "Tarde", "Noche"].forEach(bloque => {
         const horariosBloque = horariosIntervalo.filter(h => h.bloque === bloque && !horasOcupadasFecha.includes(h.value));
