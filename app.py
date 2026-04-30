@@ -2,7 +2,8 @@ from flask import Flask, render_template, request, redirect, session, flash, jso
 from flask_wtf.csrf import CSRFProtect
 import os
 from datetime import datetime, timedelta
-import sqlite3
+import psycopg2
+from psycopg2.extras import RealDictCursor
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'clave_super_secreta_123')
@@ -13,57 +14,61 @@ ADMIN_USER = os.environ.get('ADMIN_USER', 'AbrahamNE')
 ADMIN_PASS = os.environ.get('ADMIN_PASS', '0511_Abraham')
 
 
-# 🔥 CREAR BASE DE DATOS
-def crear_db():
-    conn = sqlite3.connect("barberia.db")
-    cursor = conn.cursor()
+# 🔥 CONEXIÓN CORRECTA A RENDER
+def get_db_connection():
+    return psycopg2.connect(os.environ.get("DATABASE_URL"), cursor_factory=RealDictCursor)
 
+
+def crear_tablas():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS reservas (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nombre TEXT,
-        telefono TEXT,
-        correo TEXT,
-        corte TEXT,
-        fecha TEXT,
-        horario TEXT,
+        id SERIAL PRIMARY KEY,
+        nombre TEXT NOT NULL,
+        telefono TEXT NOT NULL,
+        correo TEXT NOT NULL,
+        corte TEXT NOT NULL,
+        fecha TEXT NOT NULL,
+        horario TEXT NOT NULL,
         estado TEXT DEFAULT 'Pendiente'
     )
     """)
-
+    
     conn.commit()
+    cursor.close()
     conn.close()
 
-crear_db()
+crear_tablas()
 
 
 # 🏠 CLIENTE
 @app.route("/")
 def index():
-    conn = sqlite3.connect("barberia.db")
-    conn.row_factory = sqlite3.Row
+    conn = get_db_connection()
     cursor = conn.cursor()
-
+    
     cursor.execute("SELECT * FROM reservas")
     reservas = cursor.fetchall()
-
+    
     conn.close()
-
+    
     horas_ocupadas = [
         {"fecha": r["fecha"], "hora": r["horario"]}
-        for r in reservas if r["estado"] != "Cancelado"
+        for r in reservas if r["estado"] in ["Pendiente", "Aceptado"]
     ]
-
+    
     fecha_min = datetime.now().strftime('%Y-%m-%d')
     fecha_max = (datetime.now() + timedelta(days=30)).strftime('%Y-%m-%d')
-
+    
     return render_template("index.html",
                            horas_ocupadas=horas_ocupadas,
                            fecha_min=fecha_min,
                            fecha_max=fecha_max)
 
 
-# 💾 GUARDAR RESERVA
+# 💾 RESERVAR
 @app.route("/reservar", methods=["POST"])
 def reservar():
     nombre = request.form["nombre"]
@@ -72,18 +77,19 @@ def reservar():
     corte = request.form["corte"]
     fecha = request.form["fecha"]
     horario = request.form["horario"]
-
-    conn = sqlite3.connect("barberia.db")
+    
+    conn = get_db_connection()
     cursor = conn.cursor()
-
+    
     cursor.execute("""
         INSERT INTO reservas (nombre, telefono, correo, corte, fecha, horario)
-        VALUES (?, ?, ?, ?, ?, ?)
+        VALUES (%s, %s, %s, %s, %s, %s)
     """, (nombre, telefono, correo, corte, fecha, horario))
-
+    
     conn.commit()
+    cursor.close()
     conn.close()
-
+    
     flash("Reserva guardada con éxito 🔥")
     return redirect("/")
 
@@ -111,33 +117,33 @@ def logout():
     return redirect("/login")
 
 
-# 🧑‍💼 PANEL ADMIN
+# 🧑‍💼 ADMIN
 @app.route("/admin")
 def admin():
     if not session.get("admin"):
         return redirect("/login")
-
-    conn = sqlite3.connect("barberia.db")
-    conn.row_factory = sqlite3.Row
+    
+    conn = get_db_connection()
     cursor = conn.cursor()
-
+    
     cursor.execute("SELECT * FROM reservas ORDER BY fecha, horario")
     reservas = cursor.fetchall()
-
+    
     conn.close()
-
+    
     return render_template("admin.html", reservas=reservas)
 
 
 # ✅ ACEPTAR
 @app.route("/gestionar/<int:id>/aceptar")
 def aceptar(id):
-    conn = sqlite3.connect("barberia.db")
+    conn = get_db_connection()
     cursor = conn.cursor()
 
-    cursor.execute("UPDATE reservas SET estado='Aceptado' WHERE id=?", (id,))
+    cursor.execute("UPDATE reservas SET estado='Aceptado' WHERE id=%s", (id,))
 
     conn.commit()
+    cursor.close()
     conn.close()
 
     return redirect("/admin")
@@ -146,12 +152,13 @@ def aceptar(id):
 # ❌ CANCELAR
 @app.route("/gestionar/<int:id>/cancelar")
 def cancelar(id):
-    conn = sqlite3.connect("barberia.db")
+    conn = get_db_connection()
     cursor = conn.cursor()
 
-    cursor.execute("UPDATE reservas SET estado='Cancelado' WHERE id=?", (id,))
+    cursor.execute("UPDATE reservas SET estado='Cancelado' WHERE id=%s", (id,))
 
     conn.commit()
+    cursor.close()
     conn.close()
 
     return redirect("/admin")
@@ -160,12 +167,13 @@ def cancelar(id):
 # 🗑️ ELIMINAR
 @app.route("/gestionar/<int:id>/eliminar")
 def eliminar(id):
-    conn = sqlite3.connect("barberia.db")
+    conn = get_db_connection()
     cursor = conn.cursor()
 
-    cursor.execute("DELETE FROM reservas WHERE id=?", (id,))
+    cursor.execute("DELETE FROM reservas WHERE id=%s", (id,))
 
     conn.commit()
+    cursor.close()
     conn.close()
 
     return redirect("/admin")
@@ -177,8 +185,7 @@ def calendario():
     if not session.get("admin"):
         return redirect("/login")
 
-    conn = sqlite3.connect("barberia.db")
-    conn.row_factory = sqlite3.Row
+    conn = get_db_connection()
     cursor = conn.cursor()
 
     cursor.execute("SELECT * FROM reservas")
@@ -200,14 +207,13 @@ def calendario():
     return render_template("calendario.html", eventos=eventos)
 
 
-# 📡 API CITAS
+# 📡 API
 @app.route("/api/citas")
 def api_citas():
     if not session.get('admin'):
         return jsonify([])
 
-    conn = sqlite3.connect("barberia.db")
-    conn.row_factory = sqlite3.Row
+    conn = get_db_connection()
     cursor = conn.cursor()
 
     cursor.execute("SELECT * FROM reservas")
@@ -233,6 +239,7 @@ def api_citas():
     return jsonify(eventos)
 
 
-# 🚀 INICIAR
+# 🚀 RUN
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port) 
