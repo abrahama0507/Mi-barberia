@@ -243,55 +243,44 @@
 
     <div class="mb-3">
         <label class="form-label">Nombre Completo</label>
-        <input type="text" name="nombre" class="form-control" required>
+        <input type="text" name="nombre" class="form-control" placeholder="Ej: Juan Pérez" required>
     </div>
 
     <div class="mb-3">
         <label class="form-label">Teléfono</label>
-        <input type="tel" name="telefono" class="form-control" required>
+        <input type="tel" name="telefono" class="form-control" placeholder="Ej: 300 123 4567" required>
     </div>
 
     <div class="mb-3">
         <label class="form-label">Correo Electrónico</label>
-        <input type="email" name="correo" class="form-control" required>
+        <input type="email" name="correo" class="form-control" placeholder="tu@email.com" required>
     </div>
 
-    <!-- 🔥 FALTA ESTO -->
     <div class="mb-3">
-        <label class="form-label">Fecha</label>
-        <input type="date" id="fecha" name="fecha" class="form-control" required>
+        <label class="form-label">¿Qué corte quieres?</label>
+        <select name="corte" class="form-select">
+            <option value="Degradado">Degradado (Fade) - $3.000</option>
+            <option value="Corte Clásico">Corte Clásico - $1.500</option>
+            <option value="Barba">Perfilado de Barba - $1.000</option>
+        </select>
     </div>
 
-    <!-- 👇 ESTE YA LO PUSISTE BIEN -->
-    <input type="hidden" name="horario" id="horarioInput">
+    <div class="mb-3">
+        <label class="form-label">Elige la Fecha</label>
+        <input type="date" name="fecha" id="fecha" class="form-control" lang="es" min="{{ fecha_min }}" required>
+    </div>
 
-    <!-- 👇 BOTONES -->
-    <div id="horariosGrid"></div>
+    <div class="mb-3">
+        <label class="form-label">Elige el Horario</label>
+        <div id="horariosGrid" class="d-flex flex-wrap gap-2"></div>
+        <input type="hidden" name="horario" id="horarioInput" required>
+        <div id="noHorarios" class="text-warning mt-2" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i> No hay horarios disponibles para esta fecha. Intenta con otro día.
+        </div>
+    </div>
 
-    <button type="submit" class="btn btn-primary">Reservar</button>
+    <button type="submit" class="btn btn-gold w-100 py-2">RESERVAR</button>
 </form>
-                        <div class="mb-3">
-                            <label class="form-label">¿Qué corte quieres?</label>
-                            <select name="corte" class="form-select">
-                                <option value="Degradado">Degradado (Fade) - $3.000</option>
-                                <option value="Corte Clásico">Corte Clásico - $1.500</option>
-                                <option value="Barba">Perfilado de Barba - $1.000</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Elige la Fecha</label>
-                            <input type="date" name="fecha" id="fecha" class="form-control" lang="es" min="{{ fecha_min }}" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Elige el Horario</label>
-                            <div id="horariosGrid" class="d-flex flex-wrap gap-2"></div>
-                            <input type="hidden" name="horario" id="horarioInput" required>
-                            <div id="noHorarios" class="text-warning mt-2" style="display: none;">
-                                <i class="fas fa-exclamation-triangle"></i> No hay horarios disponibles para esta fecha. Intenta con otro día.
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-gold w-100 py-2">RESERVAR</button>
-                    </form>
                 </div>
             </div>
         </div>
