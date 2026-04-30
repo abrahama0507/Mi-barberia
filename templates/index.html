@@ -342,10 +342,12 @@ function actualizarHorariosGrid() {
         noHorariosMsg.style.display = 'none';
         return;
     }
-    const horasOcupadasFecha = horasOcupadas.filter(h => h.fecha === fechaSeleccionada).map(h => h.hora);
+    const horasOcupadasFecha = horas_ocupadas
+    .filter(h => h.fecha === fechaSeleccionada)
+    .map(h => h.hora);
     let hayDisponibles = false;
     ["Mañana", "Tarde", "Noche"].forEach(bloque => {
-        const horariosBloque = horariosIntervalo.filter(h => h.bloque === bloque && !horasOcupadasFecha.includes(h.value));
+        const horariosBloque = horariosIntervalo.filter(h => h.bloque === bloque && !horasocupadasFecha.includes(h.value));
         if (horariosBloque.length > 0) {
             hayDisponibles = true;
             const bloqueDiv = document.createElement('div');
