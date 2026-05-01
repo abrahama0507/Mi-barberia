@@ -140,13 +140,13 @@
     
 <div class="text-center py-5 header-animado" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.9)), url('/static/logo2.png') center center no-repeat;">
     <div class="redes-header">
-        <a href="https://wa.me/56968721919?text=Hola%20quiero%20reservar%20un%20corte" target="_blank">
+        <a href="https://wa.me/56968721919?text=Hola%20quiero%20reservar%20un%20corte" target="_blank" rel="noopener noreferrer">
             <i class="fab fa-whatsapp"></i>
         </a>
-        <a href="https://instagram.com/nigasbarber" target="_blank">
+        <a href="https://instagram.com/negros_cut" target="_blank" rel="noopener noreferrer">
             <i class="fab fa-instagram"></i>
         </a>
-        <a href="https://tiktok.com/@tuusuario" target="_blank">
+        <a href="https://tiktok.com/@negros_cut" target="_blank" rel="noopener noreferrer">
             <i class="fab fa-tiktok"></i>
         </a>
     </div>
@@ -243,17 +243,20 @@
 
     <div class="mb-3">
         <label class="form-label">Nombre Completo</label>
-        <input type="text" name="nombre" class="form-control" placeholder="Ej: Juan Pérez" required>
+        <input type="text" name="nombre" class="form-control" placeholder="Ej: Juan Pérez" required minlength="2" maxlength="100" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+">
+        <div class="invalid-feedback">Ingresa un nombre válido (solo letras)</div>
     </div>
 
     <div class="mb-3">
         <label class="form-label">Teléfono</label>
-        <input type="tel" name="telefono" class="form-control" placeholder="Ej: 300 123 4567" required>
+        <input type="tel" name="telefono" class="form-control" placeholder="Ej: 300 123 4567" required minlength="8" maxlength="15">
+        <div class="invalid-feedback">Ingresa un teléfono válido</div>
     </div>
 
     <div class="mb-3">
         <label class="form-label">Correo Electrónico</label>
         <input type="email" name="correo" class="form-control" placeholder="tu@email.com" required>
+        <div class="invalid-feedback">Ingresa un correo electrónico válido</div>
     </div>
 
     <div class="mb-3">
@@ -266,7 +269,7 @@
     </div>
 
     <div class="mb-3">
-        <label class="form-label">Elige la Fecha</label>
+        <label class="form-label" for="fecha">Elige la Fecha</label>
         <input type="date" name="fecha" id="fecha" class="form-control" lang="es" min="{{ fecha_min }}" required>
     </div>
 
@@ -325,6 +328,56 @@
 </div>
 
 <script>
+
+// 🛡️ VALIDACIÓN FRONTEND
+document.getElementById('formReserva').addEventListener('submit', function(e) {
+    const nombre = document.querySelector('input[name="nombre"]').value.trim();
+    const telefono = document.querySelector('input[name="telefono"]').value.trim();
+    const correo = document.querySelector('input[name="correo"]').value.trim();
+    const horario = document.getElementById('horarioInput').value;
+    
+    // Validar que no estén vacíos
+    if (!nombre || !telefono || !correo || !horario) {
+        e.preventDefault();
+        alert('⚠️ Por favor completa todos los campos');
+        return false;
+    }
+    
+    // Validar nombre solo letras
+    if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(nombre)) {
+        e.preventDefault();
+        alert('⚠️ El nombre solo puede contener letras');
+        return false;
+    }
+    
+    // Validar teléfono mínimo 8 dígitos
+    if (telefono.replace(/\D/g, '').length < 8) {
+        e.preventDefault();
+        alert('⚠️ Ingresa un teléfono válido (mínimo 8 dígitos)');
+        return false;
+    }
+    
+    // Validar correo
+    if (!correo.includes('@') || !correo.includes('.')) {
+        e.preventDefault();
+        alert('⚠️ Ingresa un correo electrónico válido');
+        return false;
+    }
+    
+    // Validar que haya seleccionado horario
+    if (!horario) {
+        e.preventDefault();
+        alert('⚠️ Por favor selecciona un horario');
+        return false;
+    }
+    
+    // Desactivar botón para evitar doble envío
+    const btn = this.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enviando...';
+    
+    return true;
+});
 
 const horasOcupadas = {{ horas_ocupadas | tojson }};
 const horariosIntervalo = [
@@ -385,10 +438,10 @@ actualizarHorariosGrid();
     <a href="https://wa.me/56968721919?text=Hola%20quiero%20reservar%20un%20corte" target="_blank" class="float-btn whatsapp">
         <i class="fab fa-whatsapp"></i>
     </a>
-    <a href="https://instagram.com/nigasbarber" target="_blank" class="float-btn instagram">
+    <a href="https://instagram.com/negros_cut" target="_blank" class="float-btn instagram">
         <i class="fab fa-instagram"></i>
     </a>
-    <a href="https://tiktok.com/@tuusuario" target="_blank" class="float-btn tiktok">
+    <a href="https://tiktok.com/@negros_cut" target="_blank" class="float-btn tiktok">
         <i class="fab fa-tiktok"></i>
     </a>
 </div>
