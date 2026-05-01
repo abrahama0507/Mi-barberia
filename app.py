@@ -11,8 +11,8 @@ app.secret_key = os.environ.get('SECRET_KEY', 'clave_super_secreta_123')
 
 csrf = CSRFProtect(app)
 
-ADMIN_USER = os.environ.get('ADMIN_USER', 'AbrahamNE')
-ADMIN_PASS = os.environ.get('ADMIN_PASS', '0511_Abraham')
+ADMIN_USER = os.environ.get('ADMIN_USER', 'NegrosCut')
+ADMIN_PASS = os.environ.get('ADMIN_PASS', 'negroscut0511')
 
 # 🛡️ CONFIGURACIÓN DE SEGURIDAD
 RESERVAS_POR_DIA = 3  # Máximo reservas por día desde una IP
